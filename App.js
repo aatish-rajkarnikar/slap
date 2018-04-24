@@ -1,39 +1,70 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
+'use strict';
 import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  Image
 } from 'react-native';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      head: require('./manhead.png'),
+      slap: 'right'
+    };
+  }
+
+  hand=()=>{
+    if (this.state.slap === 'right'){
+      return (
+        <View style={{flexDirection:'row'}}>
+            <Image style={{height: 100, width: 100, left: 64, top: -64}} source={require('./handOnRight.png')} resizeMode='contain'/>
+        </View>
+      )
+    }else{
+      return (
+        <View style={{flexDirection:'row'}}>
+            <Image style={{height: 100, width: 100,left: -64, top: -64}} source={require('./handOnLeft.png')} resizeMode='contain'/>
+        </View>
+      )
+    }
+  }
+  onSwipeLeft=(gestureState)=>{
+    this.setState({head: require('./headOnLeft.png'),slap: 'left'});
+  }
+
+  onSwipeRight=(gestureState)=> {
+    this.setState({head: require('./headOnRight.png'), slap: 'right'});
+  }
+
   render() {
+    const config = {
+      velocityThreshold: 0.001,
+      directionalOffsetThreshold: 500
+    };
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
+      <GestureRecognizer
+        onSwipeLeft={this.onSwipeLeft}
+        onSwipeRight={this.onSwipeRight}
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+         config={config}
+        >
+          <View>
+            <Image style={{height: 200, width: 200}} source={this.state.head}/>
+          </View>
+          {this.hand()}
+        <Text>{this.state.myText}</Text>
+      </GestureRecognizer>
     );
   }
 }
@@ -44,15 +75,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  }
 });
