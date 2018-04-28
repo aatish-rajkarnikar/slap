@@ -8,7 +8,8 @@ import {
   ImageBackground,
   Modal,
   TouchableOpacity,
-  Share
+  Share,
+  StatusBar
 } from 'react-native';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -93,54 +94,73 @@ export default class App extends Component {
   }
 
   render() {
-    const config = {
-      velocityThreshold: 0.001,
-      directionalOffsetThreshold: 500
-    };
-    return (
-      <ImageBackground style={styles.container} source={require('./bg.png')}>
-      <GestureRecognizer
-        onSwipeLeft={this.onSwipeLeft}
-        onSwipeRight={this.onSwipeRight}
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-         config={config}
-        >
-          <View>
-            <Text style={{fontSize: 44, marginBotton: 32, color: '#fff', fontWeight: 'bold'}}>{this.state.count}</Text>
-          </View>
-          <View>
-            <Image style={{height: 200, width: 200}} source={this.state.head}/>
-          </View>
-          {this.hand()}
-          <View>
-            <Text style={{fontSize: 44, color: '#fff', fontWeight: 'bold'}}>{this.state.timer}</Text>
-          </View>
-      </GestureRecognizer>
-      <Modal
-            animationType="fade"
-            transparent={true}
-            visible={this.state.finish}>
-            <View style={styles.finishContainer}>
-              <View style={styles.modalView}>
-                <Text style={{color: '#2c3e50', fontSize: 14}}>FINISH!</Text>
-                <Text style={{fontSize: 88, color: '#2c3e50'}}>{this.state.count}</Text>
-                <View style={{flexDirection: 'row'}}>
-                  <TouchableOpacity style={{backgroundColor: '#f39c12', alignItems:'center'}} onPress={this.onPressPlayAgain}>
-                    <Text style={[styles.optionButtonText,{color: '#fff'}]}>PLAY AGAIN!</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{backgroundColor: '#3498db', alignItems:'center'}} onPress={this.onPressShare}>
-                    <Text style={[styles.optionButtonText,{color: '#fff'}]}>SHARE</Text>
-                  </TouchableOpacity>
+    if (this.state.start) {
+      const config = {
+        velocityThreshold: 0.001,
+        directionalOffsetThreshold: 500
+      };
+      return (
+        <ImageBackground style={styles.container} source={require('./bg.png')}>
+          <StatusBar hidden={true} />
+        <GestureRecognizer
+          onSwipeLeft={this.onSwipeLeft}
+          onSwipeRight={this.onSwipeRight}
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+           config={config}
+          >
+            <View>
+              <Text style={{fontSize: 44, marginBotton: 32, color: '#fff', fontWeight: 'bold'}}>{this.state.count}</Text>
+            </View>
+            <View>
+              <Image style={{height: 200, width: 200}} source={this.state.head}/>
+            </View>
+            {this.hand()}
+            <View>
+              <Text style={{fontSize: 44, color: '#fff', fontWeight: 'bold'}}>{this.state.timer}</Text>
+            </View>
+        </GestureRecognizer>
+        <Modal
+              animationType="fade"
+              transparent={true}
+              visible={this.state.finish}>
+              <View style={styles.finishContainer}>
+                <View style={styles.modalView}>
+                  <Text style={{color: '#2c3e50', fontSize: 14}}>FINISH!</Text>
+                  <Text style={{fontSize: 88, color: '#2c3e50'}}>{this.state.count}</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity style={[styles.optionButton,{backgroundColor: '#f39c12'}]} onPress={this.onPressPlayAgain}>
+                      <Text style={[styles.optionButtonText,{color: '#fff'}]}>PLAY AGAIN!</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.optionButton,{backgroundColor: '#3498db'}]} onPress={this.onPressShare}>
+                      <Text style={[styles.optionButtonText,{color: '#fff'}]}>SHARE</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          </Modal>
-    </ImageBackground>
-    );
+            </Modal>
+      </ImageBackground>
+      );
+    }
+    return (
+      <ImageBackground style={[styles.container,{justifyContent:'space-around', alignItems:'center'}]} source={require('./bg.png')}>
+        <StatusBar hidden={true} />
+        <View style={{alignItems:'center'}}>
+          <Image style={{height: 150, width: 150}}/>
+          <Text style={{color: '#2c3e50', fontSize: 32, fontWeight: 'bold', fontStyle:'italic', marginTop: 16}}>COIN LOGO QUIZ</Text>
+          <TouchableOpacity
+            style={{margin: 64, padding: 8, alignItems: 'center',height: 40, width: 200, borderColor:'rgba(0,0,0,0.3)', borderWidth:2, borderRadius: 2, backgroundColor: '#f39c12'}}
+            onPress={()=>this.setState({start: true})}
+            >
+            <Text style={styles.optionButtonText}>PLAY!</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    )
+
   }
 }
 
@@ -163,5 +183,23 @@ const styles = StyleSheet.create({
     width: 300,
     padding: 16,
     alignItems:'center'
-  }
+  },
+  optionButton: {
+    height: 40,
+    backgroundColor: '#9b59b6',
+    borderWidth: 2,
+    borderColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 2,
+    justifyContent: 'center',
+    alignItems:'center',
+    padding: 8,
+    margin: 8,
+    flex:1
+  },
+  optionButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    textAlign: 'center'
+  },
 });
