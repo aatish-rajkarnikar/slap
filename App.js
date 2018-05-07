@@ -12,8 +12,10 @@ import {
   StatusBar
 } from 'react-native';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-
+ var Sound = require('react-native-sound');
+var slap = new Sound('slap.mp3',Sound.MAIN_BUNDLE)
 let timerId = 0
+
 export default class App extends Component {
 
   constructor(props) {
@@ -32,18 +34,21 @@ export default class App extends Component {
     if (this.state.slap === 'right'){
       return (
         <View style={{flexDirection:'row'}}>
-            <Image style={{height: 100, width: 100, left: 64, top: -64}} source={require('./handOnRight.png')} resizeMode='contain'/>
+            <Image style={{height: 80, width: 80, top: -64,position: 'absolute'}} source={require('./handOnRight.png')} resizeMode='contain'/>
         </View>
       )
     }else{
       return (
         <View style={{flexDirection:'row'}}>
-            <Image style={{height: 100, width: 100,left: -64, top: -64}} source={require('./handOnLeft.png')} resizeMode='contain'/>
+            <Image style={{height: 80, width: 80,left: -64, top: -64, position: 'absolute'}} source={require('./handOnLeft.png')} resizeMode='contain'/>
         </View>
       )
     }
   }
   onSwipeLeft=(gestureState)=>{
+    slap.stop(() => {
+      slap.play();
+    });
     if (timerId == 0 ){
       this.startTimer()
     }
@@ -54,6 +59,9 @@ export default class App extends Component {
   }
 
   onSwipeRight=(gestureState)=> {
+    slap.stop(() => {
+      slap.play();
+    });
     if (timerId == 0 ){
       this.startTimer()
     }
@@ -66,9 +74,8 @@ export default class App extends Component {
   incrementTimer = ()=>{
     this.setState({timer: this.state.timer + 1})
     if (this.state.timer == 10){
-      clearInterval(timerId)
-      timerId = 0
       this.setState({finish: true})
+      clearInterval(timerId)
     }
   }
 
@@ -78,7 +85,9 @@ export default class App extends Component {
   }
 
   onPressPlayAgain = ()=>{
+    timerId = 0
     this.setState({
+      head: require('./manhead.png'),
       finish:false,
       count: 0,
       timer: 0
@@ -87,7 +96,7 @@ export default class App extends Component {
 
   onPressShare = ()=>{
     Share.share({
-      message: `i scored ${this.state.scorePercentage} in the coin logo quiz.`,
+      message: `i scored ${this.state.scorePercentage} in the slap.`,
       url: 'http://google.com',
       title: 'Wow, did you see that?'
     })
@@ -107,21 +116,35 @@ export default class App extends Component {
           onSwipeRight={this.onSwipeRight}
           style={{
             flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'stretch',
+            justifyContent: 'center'
           }}
            config={config}
           >
-            <View>
-              <Text style={{fontSize: 44, marginBotton: 32, color: '#fff', fontWeight: 'bold'}}>{this.state.count}</Text>
+            <View style={{flex: 2, justifyContent: 'flex-end',   alignItems: 'center', zIndex: 100}}>
+              <Image style={{ height: 200, width: 200}} source={this.state.head}/>
+              <Image source={require('./callout.png')} style={{height: 100, width: 100, resizeMode:'contain', right: 0, top: 44, position: 'absolute'}}/>
+              {this.hand()}
             </View>
-            <View>
-              <Image style={{height: 200, width: 200}} source={this.state.head}/>
+            <View   style={{flex: 3, alignItems: 'center', justifyContent: 'center'}}>
+              <Image
+                resizeMode= 'contain'
+                source={require('./table.png')}
+                style={{flex: 1}}
+              />
+              <View style={{position: 'absolute'}}>
+                <View style={{alignItems: 'center'}}>
+                  <Text style={{fontSize: 18, color: '#fff', fontWeight: 'bold'}}>SLAP COUNT</Text>
+                  <Text style={{fontSize: 44, color: '#fff', fontWeight: 'bold'}}>{this.state.count}</Text>
+                </View>
+                <View style={{alignItems: 'center', marginTop: 32}}>
+                  <Text style={{fontSize: 18, color: '#fff', fontWeight: 'bold'}}>TIME</Text>
+                  <Text style={{fontSize: 44, color: '#fff', fontWeight: 'bold'}}>{this.state.timer}</Text>
+                </View>
+              </View>
+
             </View>
-            {this.hand()}
-            <View>
-              <Text style={{fontSize: 44, color: '#fff', fontWeight: 'bold'}}>{this.state.timer}</Text>
-            </View>
+
         </GestureRecognizer>
         <Modal
               animationType="fade"
@@ -150,7 +173,7 @@ export default class App extends Component {
         <StatusBar hidden={true} />
         <View style={{alignItems:'center'}}>
           <Image style={{height: 150, width: 150}}/>
-          <Text style={{color: '#2c3e50', fontSize: 32, fontWeight: 'bold', fontStyle:'italic', marginTop: 16}}>COIN LOGO QUIZ</Text>
+          <Text style={{color: '#2c3e50', fontSize: 32, fontWeight: 'bold', fontStyle:'italic', marginTop: 16}}>SLAP</Text>
           <TouchableOpacity
             style={{margin: 64, padding: 8, alignItems: 'center',height: 40, width: 200, borderColor:'rgba(0,0,0,0.3)', borderWidth:2, borderRadius: 2, backgroundColor: '#f39c12'}}
             onPress={()=>this.setState({start: true})}
@@ -167,7 +190,7 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
