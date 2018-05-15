@@ -14,6 +14,7 @@ import {
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
  var Sound = require('react-native-sound');
 var slap = new Sound('slap.mp3',Sound.MAIN_BUNDLE)
+var rogerrant = new Sound('rogerrant.mp3', Sound.MAIN_BUNDLE)
 let timerId = 0
 
 export default class App extends Component {
@@ -25,9 +26,42 @@ export default class App extends Component {
       slap: 'right',
       count: 0,
       timer: 0,
+      global_count: 0,
       start: false,
       finish: false
     };
+  }
+
+  componentWillMount(){
+    this.getScore()
+  }
+
+  postScore(score){
+    fetch(`http://159.89.172.199/counter/add/${score}`, {
+      method: 'POST',
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      this.setState({
+        global_count : responseJson.count
+      })
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+  getScore(){
+    fetch('http://159.89.172.199/counter', {
+      method: 'GET',
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      this.setState({
+        global_count : responseJson.count
+      })
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   hand=()=>{
@@ -46,26 +80,30 @@ export default class App extends Component {
     }
   }
   onSwipeLeft=(gestureState)=>{
-    slap.stop(() => {
-      slap.play();
-    });
+    rogerrant.stop()
+
     if (timerId == 0 ){
       this.startTimer()
     }
     if (this.state.slap == 'right'){
+      slap.stop(() => {
+        slap.play();
+      });
       this.setState({count: this.state.count + 1})
     }
     this.setState({head: require('./headOnLeft.png'),slap: 'left'});
   }
 
   onSwipeRight=(gestureState)=> {
-    slap.stop(() => {
-      slap.play();
-    });
+    rogerrant.stop()
+
     if (timerId == 0 ){
       this.startTimer()
     }
     if (this.state.slap == 'left'){
+      slap.stop(() => {
+        slap.play();
+      });
       this.setState({count: this.state.count + 1})
     }
     this.setState({head: require('./headOnRight.png'), slap: 'right'});
@@ -74,6 +112,7 @@ export default class App extends Component {
   incrementTimer = ()=>{
     this.setState({timer: this.state.timer + 1})
     if (this.state.timer == 10){
+      this.postScore(this.state.count)
       this.setState({finish: true})
       clearInterval(timerId)
     }
@@ -142,7 +181,14 @@ export default class App extends Component {
                   <Text style={{fontSize: 44, color: '#fff', fontWeight: 'bold'}}>{this.state.timer}</Text>
                 </View>
               </View>
-
+              <View style={{position: 'absolute', left: 10, bottom: 10}}>
+                <Text style={{fontSize: 12, color: '#fff', fontWeight: 'bold'}}>GLOBAL SLAP COUNT</Text>
+                <Text style={{fontSize: 16, color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>{this.state.global_count}</Text>
+              </View>
+              <View style={{position: 'absolute', right: 10, bottom: 10}}>
+                <Text style={{fontSize: 12, color: '#fff', fontWeight: 'bold'}}>GLOBAL SLAP TARGET</Text>
+                <Text style={{fontSize: 16, color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>1000000</Text>
+              </View>
             </View>
 
         </GestureRecognizer>
@@ -176,7 +222,10 @@ export default class App extends Component {
           <Text style={{color: '#2c3e50', fontSize: 32, fontWeight: 'bold', fontStyle:'italic', marginTop: 16}}>SLAP</Text>
           <TouchableOpacity
             style={{margin: 64, padding: 8, alignItems: 'center',height: 40, width: 200, borderColor:'rgba(0,0,0,0.3)', borderWidth:2, borderRadius: 2, backgroundColor: '#f39c12'}}
-            onPress={()=>this.setState({start: true})}
+            onPress={()=>{
+              this.setState({start: true})
+              rogerrant.play()
+            }}
             >
             <Text style={styles.optionButtonText}>PLAY!</Text>
           </TouchableOpacity>
