@@ -1,8 +1,9 @@
-package com.slap;
+package com.arzensoftwares.slap;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.arzensoftwares.slap.BuildConfig;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

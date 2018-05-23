@@ -1,4 +1,4 @@
-package com.slap;
+package com.arzensoftwares.slap;
 
 import com.facebook.react.ReactActivity;
 
