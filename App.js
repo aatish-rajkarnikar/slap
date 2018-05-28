@@ -187,7 +187,7 @@ export default class App extends Component {
               </View>
               <View style={{position: 'absolute', right: 10, bottom: 10}}>
                 <Text style={{fontSize: 12, color: '#fff', fontWeight: 'bold'}}>GLOBAL SLAP TARGET</Text>
-                <Text style={{fontSize: 16, color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>100000000</Text>
+                <Text style={{fontSize: 16, color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>21000000</Text>
               </View>
             </View>
 
