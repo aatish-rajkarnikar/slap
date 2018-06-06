@@ -12,6 +12,12 @@ import {
   StatusBar
 } from 'react-native';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  PublisherBanner,
+  AdMobRewarded,
+} from 'react-native-admob'
  var Sound = require('react-native-sound');
 var slap = new Sound('slap.mp3',Sound.MAIN_BUNDLE)
 var rogerrant = new Sound('rogerrant.mp3', Sound.MAIN_BUNDLE)
@@ -211,6 +217,11 @@ export default class App extends Component {
                 </View>
               </View>
             </Modal>
+            <AdMobBanner
+              adSize="smartBannerPortrait"
+              adUnitID="ca-app-pub-5492969470059595/4339220010"
+              onAdFailedToLoad={error => console.error(error)}
+            />
       </ImageBackground>
       );
     }
